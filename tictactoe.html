@@ -1,0 +1,747 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TicTacToe Game</title>
+    <link rel="stylesheet" href="main1.css">
+<style>
+	body{
+		width:600px;
+		margin:auto;
+		text-align:center;
+	}
+	
+	#XO{
+		margin:0px;
+		text-align:center;
+		width:380px;
+	}
+	.gamebg{
+		background-image:url(img/tictactoe-bg.jpg);
+		background-repeat:no-repeat;
+		background-position:center;
+		background-size:cover;
+	}
+	.matrixcontainer{
+		margin-left:50px;
+	}
+	#gridbutton{
+		width:30px;
+		height:30px;
+		font-size:24px;
+		margin:0px;
+		outline:none;
+		cursor:pointer;
+		float:left;
+		vertical-align:middle;
+		text-align:center;
+		background-color:#AAE3FF;
+		
+		padding:10px;
+		line-height:30px;
+		margin:2px;
+		box-shadow: 2px 2px 12px #003;
+	}
+	
+	.gridbuttonnewline{
+		clear:left;
+	}
+	.winnerHiglight{
+		color:#e40f19;/*
+		background-color:#e40f19; /*#6CC;*/
+		font-weight:bold;
+	}
+	.messageboard{
+		border:1px solid #0C0;
+		background-color:#B4E9B7;
+		height:30px;
+		padding:3px;
+		margin:2px;
+		border-radius: 3px;
+		display:none;
+		color:#030;
+	}
+	.messageboard-looser{
+		border:1px solid #F00;
+		background-color:#FADEE0;
+		height:30px;
+		padding:3px;
+		margin:2px;
+		border-radius: 3px;
+		display:none;
+		color:#F00;
+	}
+	
+	#controlpanel{
+		text-align:left;
+		vertical-align:top;
+		background-color:#CCC;
+		padding:5px;
+		padding-top:10px;
+		padding-bottom:10px;
+		margin:5px;
+		font-size:12px;
+		width:160px;
+		border: 1px solid #FFF;
+    	background-color: #6CC;
+		border-radius:5px;
+		box-shadow: 2px 2px 12px #6CC;
+		float:right !important
+	}
+	#controlpanel h4{
+		padding:0px;
+		margin:0px;
+		text-align:center;
+		/*color:white;*/
+	}
+	#controlpanel ul{
+		padding:0px;
+		margin:0px;
+		float:left;
+		list-style:none;
+	}
+
+	#controlpanel ul li{
+		padding:0px;
+		margin:0px;
+		float:left;
+		list-style:none;
+		padding-left:5px;
+		font-size:12px;
+	}
+	
+	
+	#difficultylevel{
+		padding-top:5px;
+	}
+	
+	#matrixsizecontainer{
+		padding-top:5px;
+	}
+	
+	.verticlesplit{
+		width:1px;
+		height:55px;
+		margin-top:20px;
+		margin-right:5px;
+	}
+	.splitsmall{
+		width:1px;
+		height:10px;
+		padding:0px;
+		margin:0px;
+	}
+	
+	#gameplayers{
+		padding-top:10px;
+	}
+	#gameplayers h4{
+		text-align:left;
+	}
+	
+	#gameturn{
+		text-align:left;
+		font-weight:bold;
+		padding-top:10px;
+	}
+	#gameturn h4{
+		text-align:left;
+	}
+	
+	#gamecontrol{
+		text-align:center;
+		
+	}
+	#gamecontrol button{
+		margin-top:5px;
+		text-align:center;
+		border-radius:30px;
+		width:75px;
+		height:22px;
+		outline:none;
+		font-weight:bold;
+		font-size:12px;
+		box-shadow: 1px 1px 5px #003;
+		background-color:#6CC;
+		/*margin-left:5px;*/
+		cursor:pointer;
+		margin-top:10px;
+	}
+	.play{
+		background-image:url(img/play.png);
+		background-repeat:no-repeat;
+		background-position:center;
+	}
+	.replay{
+		background-image:url(img/replay.png);
+		background-repeat:no-repeat;
+		background-position:center;
+	}
+	.playersdisp{
+		padding-top:5px;
+	}
+	select{
+		width:35px;
+		height:18px;
+		font-size:12px;
+		-webkit-border-radius: 20px;
+	    -moz-border-radius: 20px;
+	    border-radius: 20px;
+		background-color:#eec111;
+		outline:none;  
+		line-height:16px;
+	}
+	input{
+		cursor:pointer;
+	}
+</style>
+</head>
+<canvas id="game" style="position: fixed"></canvas>
+<body>
+
+
+<table width="80%">
+	<tr>
+    	<th colspan="2"><h1>TicTacToe Game</h1></th>
+    </tr>
+    <tr>
+    	<td colspan="2"><div id="messageboard" class="messageboard"></div></td>
+    </tr>
+    <tr>
+    	<td class="gamebg" width="65%" align="center" valign="top">
+            <div id="XO">&nbsp;</div>
+    	</td>
+    	<td width="35%" valign="top">
+        	<div id="controlpanel">
+            	<h4>Control Panel</h4>
+                
+                <ul>
+                	<li>
+                        <div id="matrixsizecontainer">
+                            <strong>Matrix Size:</strong><br />
+                                <input type="radio" value="3" name="matrixSize" id="matrixSize" checked="checked" />3X3<br />
+                                <input type="radio" value="4" name="matrixSize" id="matrixSize" />4X4<br />
+                                <input type="radio" value="5" name="matrixSize" id="matrixSize" />5X5
+                                
+                        </div>
+                    </li>
+                    <li>
+                        <hr class="verticlesplit" />
+                    </li>
+                    <li>
+                        <div id="difficultylevel">
+                        
+                        <h4>Who's first?</h4><br />
+                <input type="radio" name="tosswinner" id="tosswinner" value="0" checked="checked" />User<br />
+                <input type="radio" name="tosswinner" id="tosswinner" value="1" />Computer
+                        
+                    </div>
+                    </li>    
+                </ul>
+                
+                <ul><li>
+                <div id="gameplayers">
+                <h4> Player: </h4>
+                	<div class="playersdisp">
+                   <strong>User:</strong> 
+                        <select id="userdc" name="userdc">
+                        	<option value="X" selected="selected">x</option>
+                            <option value="&#9728;">&#9728;</option>                            
+                            <option value="&#9731;">&#9731;</option>
+                            <option value="&#9760;">&#9760;</option>
+                            <option value="&#9749;">&#9749;</option>
+                            <option value="&#9791;">&#9791;</option>                            
+                            <option value="&#9812;">&#9812;</option>
+                            <option value="&#9819;">&#9819;</option>
+                            <option value="&#9822;">&#9822;</option>
+                            <option value="&#9835;">&#9835;</option>
+                            <option value="&#9827;">&#9827;</option>
+                            <option value="&#9829;">&#9829;</option>
+                            <option value="&#9877;">&#9877;</option>
+                            <option value="&#9876;">&#9876;</option>
+                        </select> &nbsp;
+                        <strong>Computer:</strong> O
+                        </div>
+          		</div>
+                </li>
+
+                <li><div id="gameturn">
+                
+                </div>
+                </li>
+                </ul>
+                
+                <div id="gamecontrol">
+                                <strong> Start/Reload: </strong>
+                	<button class="play" title="Play" id="btntictactoeplay"></button><!--
+                    <button class="replay" title="Re-play"></button>
+                    <hr />-->
+        		</div>
+            </div>
+        </td>
+    </tr>
+</table>
+<!--Adding links to approperiate webpages-->
+<a href="tictactoe.html"> Game </a>
+&nbsp;
+<a href="help.html"> Home </a>
+&nbsp; 
+<a href="about.html"> About </a>
+&nbsp; 
+<a href="mailto:maj44@aber.ac.uk?subject=Contact regards TicTacToe Game">Contact me</a>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script> 
+<script language="javascript">
+//Creating TicTacToe Object
+var TicTacToe = {
+		/* config object is member of TicTacToe object: It initializes basic TicTacToe variables and some UI controls with default values */
+		config: {
+			boardSize: 3, // default matrix size 3X3
+			boardContainer: $("div#XO"), // html div object to display matrix with id "XO" converted into jquery object to be able call jquery functions on div 
+			messageBoard: $("#messageboard"), //html div element to display different messages to user
+			computerPlayer: "O", // Display charchter for player "Computer" 
+			userPlayer: "X", // Default Display charchter for player "User"
+			playbutton: "", // to hold play button object - button object will be passes by the caller function ie startGame()
+			tosswinner: 0   // who will have the first turn. 0 is default for user
+		},
+		// init (short for initialize) is a function member of TicTacToe object. It is called by startGame(). 
+		init: function( config ){
+			var self = TicTacToe;	// self object is created to safely reffer to the TicTacToe object and access all its members		
+			this.clickedPosAr = []; // Array to hold matrix posiotions that are already clicked by either user
+			this.clickablePosAr = []; // Array to hold matrix posiotions that can still be clicked by either user
+			this.turn = 0;	// will keep changing after each turn to hold next trun. 0=> user's turn, 1=> computer's turn.
+			this.winner = 0; // to hold winner 0 => "no winner", will contain "User" and "Computer" as values after winner is decided
+			
+			//As winner can be on one of two diagonals or at Rows or Columns
+			this.LD = []; // arry to hold left diagonal of matrix 
+			this.RD = []; // arry to hold right diagonal of matrix
+			this.rows = []; // arry to hold rows of matrix
+			this.cols = []; // arry to hold columns of matrix
+			
+			// below 4 variables are declared to be later used to hold copy of the above
+			/*
+			Important:
+				1- above arrays will be modified with each click to hold the player value as tracking which position in matrix is clicked by which user
+				2- below array once made in createBoard member function will never be modified and will be used for traversal to check game status
+			*/
+			this.copyLD;
+			this.copyRD;
+			this.copyrows;
+			this.copycols;
+			
+			// If caller function has set any values for config objects then call setConfigurations member function of TicTacToe object referred to as self
+			if( config ){				
+				self.setConfigurations( config );		
+			}
+			// in case if any previous message is displayed to user, close it. Jquery function slideUp with 500 ms Speed
+			self.config.messageBoard.slideUp(500);
+			
+			// this code is executing for user either clicked play or re-play (Same button with changed caption) so, creat new matrix 
+			self.createBoard();
+			// bind object to events and event listners - user may have changed the size of matrix so its important to make sure that events are being responded accordingly 
+			self.bindEvents();
+			
+			if( self.turn === 1 ){ // if user wants computer to have first turn, make computer's move
+				self.computerTurn();
+			}
+		},
+		
+		bindEvents: function(){
+			var self = TicTacToe;	
+			//for every box in matrix add checkUserClick eventlistener when user clicks on any box in matrix
+			$('*#gridbutton').on('click', self.checkUserClick);
+		},
+		
+		// update default values of config object by those provided by caller function 
+		setConfigurations: function( config ){
+			var self = TicTacToe;	
+				if(config.boardSize) // if user has specified this particular value then change it
+					self.config.boardSize =  config.boardSize; 
+				if( config.computerPlayer)
+					self.config.computerPlayer = config.computerPlayer;
+				if(config.userPlayer)
+					self.config.userPlayer = config.userPlayer;
+				if(config.boardContainer)
+					self.config.boardContainer =  config.boardContainer;
+				if(config.messageBoard)
+					self.config.messageBoard =  config.messageBoard;
+				if(config.playbutton)
+					self.config.playbutton =  config.playbutton;
+				if(config.tosswinner){
+					self.config.tosswinner =  config.tosswinner;
+					self.turn = parseInt( self.config.tosswinner ); // make sure to convert to integer 
+				}
+		},
+		
+		//member function to draw matrix
+		createBoard: function(){
+			var self = TicTacToe;
+			var size = self.config.boardSize, i=0, j=0, counter = 0, strnewline = "", strMatrix='<div class="matrixcontainer">';			
+			var container = self.config.boardContainer;			
+			
+			//empty is jquery function to clear content of the matrix container before re/drawing it
+			container.empty();
+			// for every row 			
+			for( i=1; i<= size; i++){
+				// i>1 => next output must be on new line as this position of code with i>1 means that previous row is created already
+				if(i>1){strnewline = "gridbuttonnewline"; } // this "gridbuttonnewline" is css class defined in css at top 
+				//if self.rows[i-1] position is not defined, make it an array. this way we will convert every position to array to have all rows in one array- this is to create rows array on runtime according to size specified by user.  
+				if( !self.rows[i-1] )  self.rows[i-1] = []; // i-1 as array index start with 0 while our loop is starting with value 1
+				//for every column in each row
+				for(j=1; j<=size; j++){
+					counter++; // used to name positions in matrix. its incremented in columns loop as it is used just to store counter posionion ie for a 3X3 matrix max vaule of counter will be 9
+					// same as done for rows above - make every position of cols array to be any array to have all columns in one array
+					if( !self.cols[j-1] )  self.cols[j-1] = [];	
+					//j===i means its left diagonal of matrix eg for 3X3 matrix 0,0 or 1,1 or 2,2 So, When the condition is true push the value of counter in LD array.			
+					if( j === i ) self.LD.push( counter ); 
+					// j === size - (i -1) means its right diagonal position ie for a 3X3 matrix it will be true for j=3 and i=1 ie position 0,3 ie row 0 column 3 will be first position on right diagonal. When the condition is true push the value of counter in RD array.
+					if( j === size - (i -1) ) self.RD.push( counter );
+					
+					//after checking and mentaining counter value for diagonals save counter value for rows and cols as diagonals values are also part of some rows and columns 
+					self.rows[i-1].push( counter );
+					self.cols[j-1].push ( counter );
+					//above is logical and programatical part of matrix. Now make the UI part. every box has same id but different data-pos 
+					strMatrix += '<div id="gridbutton" data-pos="'+ counter +'" class="'+strnewline+'">&nbsp;</div>';
+					strnewline = ""; // empty the variable to make sure it does not contain unwanted value
+					//since this is matrix creation - and no posion is clicked so, every position is clickable.
+					self.clickablePosAr.push(counter);
+				}
+				
+			}
+			//close the main div of matrix
+			strMatrix += '</div>';
+			// update play button. hasClass, removeClass, addClass, attr are jquery functions to do the job
+			if(self.config.playbutton.hasClass('play')) { 
+				self.config.playbutton.removeClass('play');
+				self.config.playbutton.addClass('replay'); 
+				self.config.playbutton.attr( 'title', "Replay");
+			}
+			// jquery append function will display the above created html inside the container ie self.config.boardContainer
+			container.append(strMatrix);
+			//Slice(0) is javascript function to successfully make indpendent copy of an array
+			self.copyLD = self.LD.slice(0);
+			self.copyRD = self.RD.slice(0);
+			self.copyrows = self.rows.slice(0);
+			self.copycols = self.cols.slice(0);
+			
+			// copy each array created on every index of rows array as slice() will not copy inner structure
+			for(i=0; i<self.rows.length; i++){
+				self.copyrows[i] = self.rows[i].slice(0);
+			}
+			// copy each array created on every index of cols array as slice() will not copy inner structure
+			for(i=0; i<self.cols.length; i++){
+				self.copycols[i] = self.cols[i].slice(0);
+			}
+			
+			
+		},
+		// this member function is called every time when user clicks a box in matrix.
+		checkUserClick: function(){
+			var self = TicTacToe;
+			// this in this context will hold the object on which the event is performed. so in this case this holds the box of matrix clicked by user so, wrap this in jquery to make it a jqueried object 	
+			var clickedButton = $(this);			
+			
+			var clickedPos = clickedButton.data("pos"); // .data() is jquery function to return the value of user defined attribute ie data-pos in this case as defined by createBoard member function
+			
+			if( self.isValidPosClicked( clickedPos, 0 ) ){ // check if user click is valid ( 0 is passed to show that this function is called on user's turn)
+				//this block executes if user click is valid
+				self.clickedPosAr.push( clickedPos ); // add the currently clicked position to clicked positions array 
+				self.clickablePosAr.splice(self.clickablePosAr.indexOf(clickedPos), 1); // remove the currently clicked position from clickable positions array 
+				clickedButton.html(self.config.userPlayer); // jquery html() function to set user selected charachter to display on box currently clicked by user
+				
+				self.updateLRDRC( clickedPos, self.config.userPlayer); // update both digonals and rows and columns arrays according to new situation. second argument is to establish if the function is called in user's turn or in computer's							
+				if( self.checkGameStatus() === 1 ){ // 1 returned by checkGameStatus() means that this click has not declared any winner yet so game must proceed with computer turn
+					self.turn = 1; // 1=> computer's turn	
+					self.computerTurn(); // call computerTurn member funtion to make computer's move
+				}
+			}
+			return;
+		},
+		// computerTurn member function is called on computer's turn
+		computerTurn: function(){
+			var self = TicTacToe;			
+			var button;			
+			if( self.clickablePosAr.length > 0 ){ // check if any clickable position is left
+				var clickedPos = self.clickablePosAr[Math.floor(Math.random()*self.clickablePosAr.length)];	// roll the dice to pick random value from the clickable positions			
+				if( self.isValidPosClicked( clickedPos, 1 ) ){	// check is the selected position is valid. ( 1 is passed to show that this function is called on computer's turn)				
+					self.clickedPosAr.push( clickedPos ); // add value to clicked postions
+					self.clickablePosAr.splice(self.clickablePosAr.indexOf(clickedPos), 1);	// remove value from clickable positions				
+					button = self.getButtonByPos( clickedPos ); // since the box of the random position is not clicked by anyone so box caption to display that this box is marked by computer, reference to the box is needed and getButtonByPos member function does the works
+					button.html(self.config.computerPlayer); // show computer's display character on the picked box
+					self.updateLRDRC( clickedPos, self.config.computerPlayer); // update diagonals and rows and columns. second argument is to establish if the function is called in user's turn or in computer's 
+								
+					if( self.checkGameStatus() === 1 ){ // check game status and 1 tells that no winner or looser declared yet so proceed
+						self.turn = 0; // set the turn to user's (now game will proceed after user's click)				
+					}
+				}
+			}			
+		},
+		
+		// member function to check if the click is valid
+		isValidPosClicked: function( clickedPos, player ){
+			var self = TicTacToe;	
+			var strreturn;
+			
+			// this if checks all the condition when a click is invalid.
+			if( self.clickablePosAr.length ===  0 || !self.clickablePosAr.includes( clickedPos ) || player !== self.turn || self.winner !== 0){
+				/*
+					self.clickablePosAr.length ===  0  ==> since after every complete turn clickable array elemnt corresponding to that position is removed so if this array length is 0 means no ckickable is available so user is clicking for time pass may be
+					
+					|| !self.clickablePosAr.includes( clickedPos )  ==> the selected position must be among clickable positions
+					
+					|| player !== self.turn ==> each user must click on the user's turn
+					
+					|| self.winner !== 0 ==> game is not won or lost yet
+				*/
+				strreturn = 0;
+			}else{
+				strreturn = 1;
+			}
+			
+			return strreturn;
+		},
+		// this member function returns the button object for the given position in the matrix (the box in matrix on given position ). (its not actually button its div its just referred to as button)
+		getButtonByPos: function( clickedPos ){
+			var self = TicTacToe;	
+			var b = self.config.boardContainer.find("[data-pos='" + clickedPos + "']"); // jquery find to pick elemnt by data-pos attribute value
+			return b;
+		},
+		// this member function updates both diagonals and rows and columns
+		updateLRDRC: function( clickedPos, player){
+			var self = TicTacToe;	
+			var i, updateindex;
+			
+			if( self.LD.includes( clickedPos ) ){ // if clicked position is on left Diagonal
+				i = self.LD.indexOf( clickedPos ); // get the array index position  by value
+				self.LD[i] = player; // store the value of player ie 0/1 for user/computer to keep track of which position is clicked by which user
+			}
+			
+			if( self.RD.includes( clickedPos ) ){ // if clicked position is on right Diagonal
+				i = self.RD.indexOf( clickedPos ); // get the array index position  by value
+				self.RD[i] = player; // store the value of player ie 0/1 for user/computer to keep track of which position is clicked by which user
+			}
+			
+			/*
+				below two for loops do the same (as above ifs do for diagonals) for rows and columns to make sure that every clicked position holds the user who clicked it 
+			*/
+			for(i=0; i< self.rows.length; i++){				
+				if( self.rows[i].includes( clickedPos ) ){
+					updateindex = self.rows[i].indexOf( clickedPos );
+					self.rows[i][updateindex] = player;
+				}
+			}
+			
+			for(i=0; i< self.cols.length; i++){				
+				if( self.cols[i].includes( clickedPos ) ){
+					updateindex = self.cols[i].indexOf( clickedPos );
+					self.cols[i][updateindex] = player;
+				}
+			}
+			
+			return;
+		},
+		
+		// checkGameStatus member function to check game status after latest move by either user
+		checkGameStatus: function(){
+			var self = TicTacToe;			
+			var winner, returnval = 1;			
+			
+			winner = self.checkWinner(); // check if game is already won or not yet
+			
+			if( winner === self.config.userPlayer ){ // if user has won
+					self.winner = "User"; // set winner to "User"
+					self.setWinerStatus(); // call member function to announce the winning user
+					returnval = 0; // 0 means game stopped
+			}else if( winner === self.config.computerPlayer){
+					self.winner = "Computer"; // set winner to "Computer"
+					self.setWinerStatus(); // call member function to announce the winning user
+					returnval = 0; // 0 means game stopped
+			}else if( self.clickablePosAr.length === 0 && self.winner === 0){ // if no clickable position left with no winner decided
+				returnval = 0; // 0 means game stopped
+				self.setLooserStatus();	// call member function to announce game lost 						
+			}
+			return returnval;			
+		},
+		
+		// setWinerStatus member function displays winning message to user
+		setWinerStatus: function(){
+			var self = TicTacToe;	
+			self.config.messageBoard.text(self.winner + " WON!!!");
+			self.config.messageBoard.removeClass('messageboard-looser');
+			self.config.messageBoard.addClass('messageboard');
+			self.config.messageBoard.slideDown(500);
+			return;
+		},
+		
+		// setLooserStatus member function displays game lost message to user
+		setLooserStatus: function(){
+			var self = TicTacToe;
+			if( self.clickablePosAr.length === 0 && self.winner === 0){
+				self.config.messageBoard.text("Game Tie! Nobody wins!!!");
+				self.config.messageBoard.removeClass('messageboard');
+				self.config.messageBoard.addClass('messageboard-looser');
+				self.config.messageBoard.slideDown(500);
+			}
+			return;
+		},
+		
+		// checkWinner member function  looks for winner
+		checkWinner: function(){
+			var self = TicTacToe;	
+			var returnval = 0;
+			
+			returnval = self.checkLD(); // check winner on left diagonal (LD)
+			
+			if( returnval === 0 ){ // no winner found on (LD)
+				returnval = self.checkRD();	// check winner on right diagonal (RD)			
+				if( returnval === 0 ){ // no winner found on (RD)
+					returnval = self.checkRows(); // check winner on rows
+					if( returnval === 0 ){ // no winner found on rows
+						returnval = self.checkCols(); // check winner on cols
+					}
+				}
+			}	
+			return returnval;
+		},
+		
+		// checkLD member function ckecks winner on Left Diagonal
+		checkLD: function(){
+			var self = TicTacToe;	
+			var returnval = 0;
+			var i, user=0, computer=0;
+			
+			//loop through LD array to search which positions on LD are clicked by which user and increment corresponding user counter 
+			for(i=0; i<self.LD.length; i++){
+				if(self.LD[i] === self.config.userPlayer){ user++;
+				}else if(self.LD[i] === self.config.computerPlayer) { computer++; }
+			}
+			
+			if( user === self.LD.length ){ // if user counter value is equal to the length of LD array ==> all positions are clicked by user so user is winner
+				returnval = self.config.userPlayer; // set the return value to user's display character
+				self.highlightWinner( self.copyLD ); // highlight the winner digonal
+			}else if( computer === self.LD.length ){ // if computer counter value is equal to the length of LD array ==> all positions are clicked by computer so computer is winner
+				returnval = self.config.computerPlayer; // set the return value to computer's display character
+				self.highlightWinner( self.copyLD ); // highlight the winner digonal
+			}
+			
+			return returnval;
+		},
+		
+		// checkRD member function ckecks winner on Right Diagonal using same logic as checkLD
+		checkRD: function(){
+			var self = TicTacToe;	
+			var returnval = 0;
+			var i, user=0, computer=0;
+			
+			for(i=0; i<self.RD.length; i++){
+				if(self.RD[i] === self.config.userPlayer){ user++;
+				}else if(self.RD[i] === self.config.computerPlayer) { computer++; }
+			}
+			if( user === self.RD.length ){
+				returnval = self.config.userPlayer;
+				self.highlightWinner( self.copyRD );
+			}else if( computer === self.RD.length ){
+				returnval = self.config.computerPlayer;
+				self.highlightWinner( self.copyRD );
+			}
+			
+			return returnval;
+		},
+		
+		// checkRows member function ckecks winner on each row using same logic as checkLD only loops through Rows
+		checkRows: function(){
+			var self = TicTacToe;	
+			var returnval = 0;
+			var i, j, user=0, computer=0;
+			
+			for(i=0; i<self.rows.length; i++){
+				for(j=0; j<self.rows[i].length; j++){
+					if(self.rows[i][j] === self.config.userPlayer){ user++;
+					}else if(self.rows[i][j] === self.config.computerPlayer) { computer++; }
+				}
+				if( user === self.rows[i].length ){
+					returnval = self.config.userPlayer;
+					self.highlightWinner( self.copyrows[i] );
+					break;
+				}else if( computer === self.rows[i].length ){
+					returnval = self.config.computerPlayer;
+					self.highlightWinner( self.copyrows[i] );
+					break;
+				}
+				
+				user=0;
+				computer=0;
+			}
+			
+			return returnval;
+		},
+		
+		// checkCols member function ckecks winner on each column using same logic as checkRows
+		checkCols: function(){
+			var self = TicTacToe;	
+			var returnval = 0;
+			var i, j, user=0, computer=0;
+			
+			for(i=0; i<self.cols.length; i++){
+				for(j=0; j<self.cols[i].length; j++){
+					if(self.cols[i][j] === self.config.userPlayer){ user++;
+					}else if(self.cols[i][j] === self.config.computerPlayer) { computer++; }
+				}
+				if( user === self.cols[i].length ){
+					returnval = self.config.userPlayer;
+					self.highlightWinner( self.copycols[i] );
+					break;
+				}else if( computer === self.cols[i].length ){
+					returnval = self.config.computerPlayer;
+					self.highlightWinner( self.copycols[i] );
+					break;
+				}
+				user=0;
+				computer=0;
+			}
+			return returnval;
+		},
+		
+		// highlights the posiotions by which user won takes "array to highlight" as argument
+		highlightWinner: function( arrToHL ){
+			var self = TicTacToe;	
+			var i, b;
+			//loop through array
+			for(i=0; i<arrToHL.length; i++){
+				b = self.config.boardContainer.find("[data-pos='" + arrToHL[i] + "']");	// jquery find the element by position
+				b.addClass('winnerHiglight'); // jquery add winnerHiglight class to the found elemnt	
+			}
+			return;
+		}
+	}; // end of TicTacToe object
+	
+	(function(){ 
+	
+	// this code executes when dom is ready.
+		
+		$('button#btntictactoeplay').on('click', startGame); // jquery binding startGame to the click of button with id "btntictactoeplay"
+		
+		function startGame(){ // function is called whenever user clicks play/re-play
+			var btn = $(this); // this will refrence to play/replay button as this function is called on click of that button
+			
+			//make config object to pass it to TicTacToe's init member function to initialize configurations
+			var config = {
+					boardSize: $('input#matrixSize[type="radio"]:checked').val(),
+					boardContainer: $("div#XO"),
+					messageBoard: $("#messageboard"),
+					computerPlayer: "O",
+					userPlayer: $('#userdc').val(),
+					playbutton: btn,
+					tosswinner: $('input#tosswinner[type="radio"]:checked').val()
+				};
+				
+				//console.log(config);
+				
+			TicTacToe.init( config );
+		}
+	})();
+</script>
+</body>
+</html>
